@@ -102,10 +102,10 @@ module UboostClient
 
   class Points
 
-    attr_accessor :connection, :url
+    attr_accessor :client, :url
 
     def initialize(client)
-      client.connection = client
+      @client = client
       @url = '/api/points_transactions'
     end
 
