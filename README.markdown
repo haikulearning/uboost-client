@@ -18,7 +18,8 @@ client = UboostClient::Client.new(:subdomain => 'test_subdomain', :api_credentia
 
 # Examples
 #
-# All commands return a OpenStruct. Its structure correlates to the JSON that is returned from uBoost API.
+# All commands return a OpenStruct. Its structure correlates to the 
+# JSON that is returned from uBoost API.
 
 client.account.create({ "user_name" => "test_user_2" })
 =>
