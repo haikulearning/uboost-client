@@ -8,7 +8,7 @@ task 'build' do
 end
 
 desc "Publish gem"
-task "release" do
+task "publish" do
   system("gem push uboost-client-#{UboostClient::VERSION}.gem")
 end
 
