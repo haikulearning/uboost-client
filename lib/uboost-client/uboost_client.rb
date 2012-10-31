@@ -180,6 +180,11 @@ module UboostClient
       response = @client.connection.get @url + '/profile', :sso_token => get_sso_token(account_id)
       OpenStruct.new(JSON.parse(response.body))
     end
+    
+    def my_badges(account_id, badge_category_id = "all")
+      response = @client.connection.get @url + '/badges/mine/' + badge_category_id, :sso_token => get_sso_token(account_id)
+      OpenStruct.new(JSON.parse(response.body))
+    end
 
     def ubar(account_id, options = Hash.new)
       options = {:align => "", :bar_color => '', :div_id => ''}.merge(options)
