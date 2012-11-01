@@ -66,4 +66,8 @@ client.widgets.my_badges(921679358)
 
 client.widgets.ubar(921679358)
 
+client.widgets.list_of_leaderboards(921679373)
+
+client.widgets.leaderboard(921679373, 226)
+
 ```
