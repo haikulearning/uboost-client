@@ -189,9 +189,10 @@ module UboostClient
     def ubar(account_id, options = Hash.new)
       options = {:align => "", :bar_color => '', :div_id => ''}.merge(options)
       token = get_sso_token(account_id)
-      subdomain_url = client.subdomain + ".uboost.com"
+      subdomain_url = "http://" + client.subdomain + ".uboost.com"
 
-"      <div style='position: absolute; bottom: 0px; z-index: 2; height: 36px;' id='#{options[:div_id]}'>
+"     <script type='text/javascript' src='#{subdomain_url}/javascripts/uBar.js'></script> 
+      <div style='position: absolute; bottom: 0px; z-index: 2; height: 36px;' id='#{options[:div_id]}'>
         <object>
           <param value='#{subdomain_url}/uBar.swf' name='movie'>
           <param value='100%' name='width'>
