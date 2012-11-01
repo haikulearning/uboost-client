@@ -19,3 +19,4 @@ client = UboostClient::Client.new(:subdomain => subdomain, :api_credentials => a
 # puts client.badges.unaward(921679373, 467)
 # puts client.widgets.profile(921679373)
 # puts client.widgets.my_badges(921679373)
+# puts client.widgets.ubar(921679373)

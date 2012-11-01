@@ -21,12 +21,22 @@ client = UboostClient::Client.new(:subdomain => 'test_subdomain', :api_credentia
 # All commands return a OpenStruct. Its structure correlates to the 
 # JSON that is returned from uBoost API.
 
-client.account.create({ "user_name" => "test_user_2" })
-=>
-  <OpenStruct student={"id"=>921679358, 
-    "external_id"=>nil, 
-    "catalog_id"=>109,   
-    "points"=>0, ...}
+response = client.account.create({ "user_name" => "test_user_2" })
+  =>
+    <OpenStruct student={"id"=>921679358, 
+      "external_id"=>nil, 
+      "catalog_id"=>109,   
+      "points"=>0, ...}
+    
+response.student[:points] 
+  => 0
+  
+or if there is any error:
+
+response.status
+  => 422
+response.message 
+  => "Widgets API requires a student account"
 
 client.account.select(921679358)
 
@@ -51,4 +61,9 @@ client.badges.award(921679359, 1)
 client.badges.unaward(921679359, 1)
 
 client.widgets.profile(921679358)
+
+client.widgets.my_badges(921679358)
+
+client.widgets.ubar(921679358)
+
 ```
