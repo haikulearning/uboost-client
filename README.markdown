@@ -99,15 +99,12 @@ client.widgets(:session => session).profile(:account_id => 921679373)
 
 client.widgets.my_badges(:account_id => 921679373)
 client.widgets(:session => session).my_badges(:account_id => 921679373)
-client.widgets(:session => session).my_badges(:account_id => 921679373)
 
 client.widgets.ubar(921679373)
 
 client.widgets.list_of_leaderboards(:account_id => 921679373)
 client.widgets(:session => session).list_of_leaderboards(:account_id => 921679373)
-client.widgets(:session => session).list_of_leaderboards(:account_id => 921679373)
 
 client.widgets.leaderboard(:account_id => 921679373, :leaderboard_id => 226)
-client.widgets(:session => session).leaderboard(:account_id => 921679373, :leaderboard_id => 226)
 client.widgets(:session => session).leaderboard(:account_id => 921679373, :leaderboard_id => 226)
 ```
