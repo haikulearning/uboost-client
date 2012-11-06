@@ -5,7 +5,7 @@ subdomain        = ENV['UBOOST_SUBDOMAIN']
 api_credentials  = { :username => ENV['UBOOST_USERNAME'], :password => ENV['UBOOST_PASSWORD'] }
 session = Hash.new 
 
-client = UboostClient::Client.new(:subdomain => subdomain, :api_credentials => api_credentials)
+client = UboostClient::Client.new(:subdomain => subdomain, :api_credentials => api_credentials, :debug => false)
 
 # puts client.account.create({ "user_name" => "test_user_2" })
 # puts client.account.select(921679373)

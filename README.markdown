@@ -13,8 +13,10 @@ gem install 'uboost-client'
 ```ruby
 require 'uboost-client'
 
-client = UboostClient::Client.new(:subdomain => 'test_subdomain', :api_credentials => 
-  {:username => 'api_username', :password => 'api_password'})
+client = UboostClient::Client.new(:subdomain => 'test_subdomain', 
+                                  :debug => true, # Print debug info. Defaults to false
+                                  :api_credentials => 
+                                    {:username => 'api_username', :password => 'api_password'})
 
 # Examples
 #

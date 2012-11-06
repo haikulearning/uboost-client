@@ -19,9 +19,9 @@ module UboostClient
     def connection
       url = "https://#{@api_credentials[:username]}:#{@api_credentials[:password]}@#{@subdomain}.uboost.com"
       Faraday.new(url) do |faraday|
-        faraday.request  :url_encoded             # form-encode POST params
-        faraday.response :logger                  # log requests to STDOUT
-        faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
+        faraday.request  :url_encoded               # form-encode POST params
+        faraday.response :logger          if @debug # log requests to STDOUT
+        faraday.adapter  Faraday.default_adapter    # make requests with Net::HTTP
       end
     end
 
@@ -29,7 +29,7 @@ module UboostClient
       url = "https://#{@subdomain}.uboost.com"
       Faraday.new(url, {:headers=>{'Cookie'=> uboost_session_id}}) do |faraday|
         faraday.request  :url_encoded             # form-encode POST params
-        faraday.response :logger                  # log requests to STDOUT
+        faraday.response :logger        if @debug # log requests to STDOUT
         faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
       end
     end
