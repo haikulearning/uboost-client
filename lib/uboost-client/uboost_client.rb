@@ -2,6 +2,7 @@ require 'rubygems'
 require 'faraday'
 require 'json'
 require 'ostruct'
+require 'cgi'
 
 module UboostClient
 
@@ -12,11 +13,21 @@ module UboostClient
     def initialize(options = Hash.new)
       @subdomain        = options[:subdomain]
       @api_credentials  = options[:api_credentials]
+      @debug            = options[:debug] || false
     end
 
     def connection
       url = "https://#{@api_credentials[:username]}:#{@api_credentials[:password]}@#{@subdomain}.uboost.com"
       Faraday.new(url) do |faraday|
+        faraday.request  :url_encoded             # form-encode POST params
+        faraday.response :logger                  # log requests to STDOUT
+        faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
+      end
+    end
+
+    def connection_with_uboost_session(uboost_session_id)
+      url = "https://#{@subdomain}.uboost.com"
+      Faraday.new(url, {:headers=>{'Cookie'=> uboost_session_id}}) do |faraday|
         faraday.request  :url_encoded             # form-encode POST params
         faraday.response :logger                  # log requests to STDOUT
         faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
@@ -35,8 +46,8 @@ module UboostClient
       @badges ||= UboostClient::Badges.new(self)
     end
 
-    def widgets
-      @widgets ||= UboostClient::Widgets.new(self)
+    def widgets(options = Hash.new)
+      @widgets = UboostClient::Widgets.new(self, options)
     end
 
   end
@@ -165,44 +176,75 @@ module UboostClient
   end
 
   class Widgets
-    attr_accessor :url, :client
+    attr_accessor :url, :client, :session
 
-    def initialize(client)
+    def initialize(client, options)
       @client = client
       @url = '/api/widgets'
+      @session = options[:session] || false
+    end
+
+    def session_cache_available?
+      @session
+    end
+
+    def cached_uboost_id_available?
+      @session && @session[:uboost_session_id]
     end
 
     def get_sso_token(account_id)
       client.account.token(account_id).student["sso_token"]
     end
 
-    def profile(account_id)
-      response = @client.connection.get @url + '/profile', :sso_token => get_sso_token(account_id)
-      OpenStruct.new(JSON.parse(response.body))
+    def cache_uboost_cookie(response)
+      cookie = CGI::Cookie.parse(response.headers['set-cookie'])
+      @session[:uboost_session_id] = "_uboost_session_id=" + cookie["_uboost_session_id"][0]
     end
     
-    def my_badges(account_id, badge_category_id = "all")
-      response = @client.connection.get @url + '/badges/mine/' + badge_category_id, :sso_token => get_sso_token(account_id)
+    def get(url, options)
+      response = nil
+      if !session_cache_available?
+        response = @client.connection.get url, :sso_token => get_sso_token(options[:account_id])
+      elsif !cached_uboost_id_available?
+        response = @client.connection.get url, :sso_token => get_sso_token(options[:account_id])
+        cache_uboost_cookie(response)
+      elsif cached_uboost_id_available?
+        response = @client.connection_with_uboost_session(@session[:uboost_session_id]).get url
+        cache_uboost_cookie(response)
+      end
+      response
+    end
+
+    def profile(options)
+      options = {:account_id => nil}.merge(options)
+      response = get(@url + '/profile', options)
       OpenStruct.new(JSON.parse(response.body))
     end
-    
-    def list_of_leaderboards(account_id)
-      response = @client.connection.get @url + '/leaderboards', :sso_token => get_sso_token(account_id)
+
+    def my_badges(options)
+      options = {:account_id => nil, :badge_category_id => 'all'}.merge(options)
+      response = get(@url + '/badges/mine/' + options[:badge_category_id], options)
       OpenStruct.new(JSON.parse(response.body))
     end
-    
-    def leaderboard(account_id, leaderboard_id)
-      response = @client.connection.get @url + '/leaderboards/' + leaderboard_id.to_s, :sso_token => get_sso_token(account_id)
-      OpenStruct.new(JSON.parse(response.body))          
+
+    def list_of_leaderboards(options)      
+      response = get(@url + '/leaderboards/', options)
+      OpenStruct.new(JSON.parse(response.body))
+    end
+
+    def leaderboard(options)
+      options = {:account_id => nil, :leaderboard_id => nil}.merge(options)
+      response = get(@url + '/leaderboards/' + options[:leaderboard_id].to_s, options)
+      OpenStruct.new(JSON.parse(response.body))
     end
 
     def ubar(account_id, options = Hash.new)
-      options = {:align => "", :bar_color => '', :div_id => ''}.merge(options)
+      options = {:align => "", :bar_color => '', :div_id => 'ubar'}.merge(options)
       token = get_sso_token(account_id)
       subdomain_url = "http://" + client.subdomain + ".uboost.com"
 
-"     <script type='text/javascript' src='#{subdomain_url}/javascripts/uBar.js'></script> 
-      <div style='position: absolute; bottom: 0px; z-index: 2; height: 36px;' id='#{options[:div_id]}'>
+"     <script type='text/javascript' src='#{subdomain_url}/javascripts/uBar.js'></script>
+      <div class='uboost_ubar' id='#{options[:div_id]}'>
         <object>
           <param value='#{subdomain_url}/uBar.swf' name='movie'>
           <param value='100%' name='width'>

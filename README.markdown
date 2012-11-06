@@ -59,6 +59,32 @@ client.points.add_points_to_account(921679359, 30, {:description => 'a descripti
 client.badges.award(921679359, 1)
 
 client.badges.unaward(921679359, 1)
+```
+
+The widgets section can make use of a session store. Just pass a session object - something that quacks like a hash - and the first call it makes will cache the `uboost_session_id`.
+
+````ruby
+
+# No caching
+client.widgets.profile(:account_id => 921679373)  
+# Caching activated. It will cache the uboost sesion.
+client.widgets(:session => session).profile(:account_id => 921679373)
+# Caching activated. It will use the cached uboost sesion.
+client.widgets(:session => session).profile(:account_id => 921679373)
+
+client.widgets.my_badges(:account_id => 921679373)
+client.widgets(:session => session).my_badges(:account_id => 921679373)
+client.widgets(:session => session).my_badges(:account_id => 921679373)
+
+client.widgets.ubar(921679373)
+
+client.widgets.list_of_leaderboards(:account_id => 921679373)
+client.widgets(:session => session).list_of_leaderboards(:account_id => 921679373)
+client.widgets(:session => session).list_of_leaderboards(:account_id => 921679373)
+
+client.widgets.leaderboard(:account_id => 921679373, :leaderboard_id => 226)
+client.widgets(:session => session).leaderboard(:account_id => 921679373, :leaderboard_id => 226)
+client.widgets(:session => session).leaderboard(:account_id => 921679373, :leaderboard_id => 226)
 
 client.widgets.profile(921679358)
 

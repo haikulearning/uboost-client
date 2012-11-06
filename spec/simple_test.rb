@@ -1,7 +1,9 @@
 require File.expand_path('lib/uboost-client')
+require "pp"
 
 subdomain        = ENV['UBOOST_SUBDOMAIN']
 api_credentials  = { :username => ENV['UBOOST_USERNAME'], :password => ENV['UBOOST_PASSWORD'] }
+session = Hash.new 
 
 client = UboostClient::Client.new(:subdomain => subdomain, :api_credentials => api_credentials)
 
@@ -17,10 +19,21 @@ client = UboostClient::Client.new(:subdomain => subdomain, :api_credentials => a
 # puts client.points.add_points_to_account(921679359, 30, {:description => 'whatps'})
 # puts client.badges.award(921679373, 467)
 # puts client.badges.unaward(921679373, 467)
-# puts client.widgets.profile(921679373)
-# puts client.widgets.my_badges(921679373)
+
+# puts client.widgets.profile(:account_id => 921679373)
+# puts client.widgets(:session => session).profile(:account_id => 921679373)
+# puts client.widgets(:session => session).profile(:account_id => 921679373)
+
+# puts client.widgets.my_badges(:account_id => 921679373)
+# puts client.widgets(:session => session).my_badges(:account_id => 921679373)
+# puts client.widgets(:session => session).my_badges(:account_id => 921679373)
+
 # puts client.widgets.ubar(921679373)
-# puts client.widgets.list_of_leaderboards(921679373)
-puts client.widgets.leaderboard(921679373, 226)
-puts client.widgets.leaderboard(921679373, 227)
-puts client.widgets.leaderboard(921679373, 228)
+
+# puts client.widgets.list_of_leaderboards(:account_id => 921679373)
+# puts client.widgets(:session => session).list_of_leaderboards(:account_id => 921679373)
+# puts client.widgets(:session => session).list_of_leaderboards(:account_id => 921679373)
+
+# puts client.widgets.leaderboard(:account_id => 921679373, :leaderboard_id => 226)
+# puts client.widgets(:session => session).leaderboard(:account_id => 921679373, :leaderboard_id => 226)
+# puts client.widgets(:session => session).leaderboard(:account_id => 921679373, :leaderboard_id => 226)
