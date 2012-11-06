@@ -28,7 +28,7 @@ client = UboostClient::Client.new(:subdomain => subdomain, :api_credentials => a
 # puts client.widgets(:session => session).my_badges(:account_id => 921679373)
 # puts client.widgets(:session => session).my_badges(:account_id => 921679373)
 
-# puts client.widgets.ubar(921679373)
+puts client.widgets.ubar(:account_id => 921679373)
 
 # puts client.widgets.list_of_leaderboards(:account_id => 921679373)
 # puts client.widgets(:session => session).list_of_leaderboards(:account_id => 921679373)

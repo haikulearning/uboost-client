@@ -238,9 +238,9 @@ module UboostClient
       OpenStruct.new(JSON.parse(response.body))
     end
 
-    def ubar(account_id, options = Hash.new)
-      options = {:align => "", :bar_color => '', :div_id => 'ubar'}.merge(options)
-      token = get_sso_token(account_id)
+    def ubar(options = Hash.new)
+      options = {:align => "top", :bar_color => '0x222222', :div_id => 'ubar'}.merge(options)
+      token = get_sso_token(options[:account_id])
       subdomain_url = "http://" + client.subdomain + ".uboost.com"
 
 "     <script type='text/javascript' src='#{subdomain_url}/javascripts/uBar.js'></script>
@@ -256,7 +256,7 @@ module UboostClient
           <param value='false' name='cacheBusting'>
           <param value='true' name='allowFullScreen'>
           <embed width='1280' height='400' wmode='transparent' allowfullscreen='true' quality='high'
-            cachebusting='false' flashvars='url=#{subdomain_url}/ubar/&token=#{token}&align=#{options[:align]}&barColor=#{options[:bar_color]}&divId=#{:div_id}'
+            cachebusting='false' flashvars='url=#{subdomain_url}/ubar/&token=#{token}&align=#{options[:align]}&barColor=#{options[:bar_color]}&divId=#{options[:div_id]}'
             allowscriptaccess='always' src='#{subdomain_url}/uBar.swf'>
         </object>
       </div>"
