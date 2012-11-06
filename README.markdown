@@ -38,6 +38,16 @@ response.status
 response.message 
   => "Widgets API requires a student account"
 
+```
+
+### Account
+
+https://github.com/chriskk/uBoost-API-v2#accounts-api
+
+```ruby
+
+client.account.create({ "user_name" => "test_user_2" })
+
 client.account.select(921679358)
 
 client.account.delete(921679358)
@@ -50,20 +60,43 @@ client.account.find(:external_id => '3253466')
 
 client.account.token(921679358)
 
+```
+
+### Points
+
+https://github.com/chriskk/uBoost-API-v2#points-api
+
+```ruby
+
+
+
 client.points.point_transactions_for_account(921679358)
 
 client.account.points_transactions(921679358)
 
 client.points.add_points_to_account(921679359, 30, {:description => 'a description'})
 
+```
+
+### Badges
+
+https://github.com/chriskk/uBoost-API-v2#badges-api
+
+```ruby
 client.badges.award(921679359, 1)
 
 client.badges.unaward(921679359, 1)
 ```
 
-The widgets section can make use of a session store. Just pass a session object - something that quacks like a hash - and the first call it makes will cache the `uboost_session_id`.
+### Widgets
 
-````ruby
+https://github.com/chriskk/uBoost-API-v2#widgets-api
+
+The widgets section can make use of a session store. Just pass a session object - something that quacks like a hash - and the first call it makes will cache the `_uboost_session_id` that the uBoost API returns, to `:uboost_session_id` in the session object.
+
+```ruby
+
+session = Hash.new # or a Ruby on Rails session, for example
 
 # No caching
 client.widgets.profile(:account_id => 921679373)  
