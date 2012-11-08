@@ -235,7 +235,7 @@ module UboostClient
 
     def my_badges(options = Hash.new)
       options = {:account_id => nil, :badge_category_id => 'all'}.merge(options)
-      response = get(@url + '/badges/mine/' + options[:badge_category_id], options)
+      response = get(@url + '/badges/mine/' + options[:badge_category_id].to_s, options)
       OpenStruct.new(JSON.parse(response.body))
     end
 
