@@ -1,6 +1,6 @@
 # uBoost Client API
 
-This is the unofficial ruby client for uBoost API. It is a wrapper for the REST interface described at [https://github.com/chriskk/uBoost-API-v2](https://github.com/chriskk/uBoost-API-v2)
+This is the unofficial ruby client for uBoost API. It is a wrapper for the REST interface described at [https://github.com/uboost/uBoost-API-v2](https://github.com/uboost/uBoost-API-v2)
 
 ## Installing
 
@@ -43,7 +43,7 @@ response.message
 
 ### Account
 
-https://github.com/chriskk/uBoost-API-v2#accounts-api
+https://github.com/uboost/uBoost-API-v2#accounts-api
 
 ```ruby
 client.account.create({ "user_name" => "test_user_2" })
@@ -63,7 +63,7 @@ client.account.token(921679358)
 
 ### Points
 
-https://github.com/chriskk/uBoost-API-v2#points-api
+https://github.com/uboost/uBoost-API-v2#points-api
 
 ```ruby
 client.points.point_transactions_for_account(921679358)
@@ -75,7 +75,7 @@ client.points.add_points_to_account(921679359, 30, {:description => 'a descripti
 
 ### Badges
 
-https://github.com/chriskk/uBoost-API-v2#badges-api
+https://github.com/uboost/uBoost-API-v2#badges-api
 
 ```ruby
 client.badges.award(921679359, 1)
@@ -85,7 +85,16 @@ client.badges.unaward(921679359, 1)
 
 ### Widgets
 
-https://github.com/chriskk/uBoost-API-v2#widgets-api
+https://github.com/uboost/uBoost-API-v2#widgets-api
+
+Authentication for the Widgets API can be made by: sending in a student account's username and password, or have the gem automatically use SSO and cookies.
+
+```ruby
+# Use the student's username and password
+response = client.account.select(921679358)
+credentials = { credentials: { username: response.student["user_name"], password: response.student["password"]} }
+client.widgets(credentials).profile
+```
 
 The widgets section can make use of a session store. Just pass a session object - something that quacks like a hash - and the first call it makes will cache the `_uboost_session_id` that the uBoost API returns, to `:uboost_session_id` in the session object.
 
@@ -93,7 +102,7 @@ The widgets section can make use of a session store. Just pass a session object 
 session = Hash.new # or a Ruby on Rails session, for example
 
 # No caching
-client.widgets.profile(:account_id => 921679373)  
+client.widgets.profile(:account_id => 921679373)
 # Caching activated. It will cache the uboost sesion.
 client.widgets(:session => session).profile(:account_id => 921679373)
 # Caching activated. It will use the cached uboost sesion.
