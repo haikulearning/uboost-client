@@ -16,8 +16,13 @@ module UboostClient
       @debug            = options[:debug] || false
     end
 
-    def connection
-      url = "https://#{@api_credentials[:username]}:#{@api_credentials[:password]}@#{@subdomain}.uboost.com"
+    def connection(credentials = nil)
+      if credentials
+        basic_auth_creds = "#{credentials[:username]}:#{credentials[:password]}"
+      else
+        basic_auth_creds = "#{@api_credentials[:username]}:#{@api_credentials[:password]}"
+      end
+      url = "https://#{basic_auth_creds}@#{@subdomain}.uboost.com"
       Faraday.new(url) do |faraday|
         faraday.request  :url_encoded               # form-encode POST params
         faraday.response :logger          if @debug # log requests to STDOUT
@@ -176,12 +181,17 @@ module UboostClient
   end
 
   class Widgets
-    attr_accessor :url, :client, :session
+    attr_accessor :url, :client, :session, :credentials
 
     def initialize(client, options)
       @client = client
       @url = '/api/widgets'
       @session = options[:session] || false
+      @credentials = options[:credentials] || false
+    end
+
+    def credentials_available?
+      @credentials
     end
 
     def session_cache_available?
@@ -203,7 +213,9 @@ module UboostClient
     
     def get(url, options)
       response = nil
-      if !session_cache_available?
+      if credentials_available?
+        response = @client.connection(@credentials).get url
+      elsif !session_cache_available?
         response = @client.connection.get url, :sso_token => get_sso_token(options[:account_id])
       elsif !cached_uboost_id_available?
         response = @client.connection.get url, :sso_token => get_sso_token(options[:account_id])
@@ -215,24 +227,24 @@ module UboostClient
       response
     end
 
-    def profile(options)
+    def profile(options = Hash.new)
       options = {:account_id => nil}.merge(options)
       response = get(@url + '/profile', options)
       OpenStruct.new(JSON.parse(response.body))
     end
 
-    def my_badges(options)
+    def my_badges(options = Hash.new)
       options = {:account_id => nil, :badge_category_id => 'all'}.merge(options)
       response = get(@url + '/badges/mine/' + options[:badge_category_id], options)
       OpenStruct.new(JSON.parse(response.body))
     end
 
-    def list_of_leaderboards(options)      
+    def list_of_leaderboards(options = Hash.new)      
       response = get(@url + '/leaderboards/', options)
       OpenStruct.new(JSON.parse(response.body))
     end
 
-    def leaderboard(options)
+    def leaderboard(options = Hash.new)
       options = {:account_id => nil, :leaderboard_id => nil}.merge(options)
       response = get(@url + '/leaderboards/' + options[:leaderboard_id].to_s, options)
       OpenStruct.new(JSON.parse(response.body))
