@@ -87,13 +87,22 @@ client.badges.unaward(921679359, 1)
 
 https://github.com/uboost/uBoost-API-v2#widgets-api
 
+Authentication for the Widgets API can be made by: sending in a student account's username and password, or have the gem automatically use SSO and cookies.
+
+```ruby
+# Use the student's username and password
+response = client.account.select(921679358)
+credentials = { credentials: { username: response.student["user_name"], password: response.student["password"]} }
+client.widgets(credentials).profile
+```
+
 The widgets section can make use of a session store. Just pass a session object - something that quacks like a hash - and the first call it makes will cache the `_uboost_session_id` that the uBoost API returns, to `:uboost_session_id` in the session object.
 
 ```ruby
 session = Hash.new # or a Ruby on Rails session, for example
 
 # No caching
-client.widgets.profile(:account_id => 921679373)  
+client.widgets.profile(:account_id => 921679373)
 # Caching activated. It will cache the uboost sesion.
 client.widgets(:session => session).profile(:account_id => 921679373)
 # Caching activated. It will use the cached uboost sesion.
