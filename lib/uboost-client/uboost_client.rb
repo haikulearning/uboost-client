@@ -233,9 +233,26 @@ module UboostClient
       OpenStruct.new(JSON.parse(response.body))
     end
 
+    def badge_categories(options = Hash.new)      
+      response = get(@url + '/badge_categories', options)
+      OpenStruct.new(JSON.parse(response.body))
+    end
+
+    def badges_for_category(options = Hash.new)
+      options = {:account_id => nil, :badge_category_id => nil}.merge(options)
+      response = get(@url + '/badge_categories/' + options[:badge_category_id].to_s + '/badges', options)
+      OpenStruct.new(JSON.parse(response.body))
+    end
+
     def my_badges(options = Hash.new)
       options = {:account_id => nil, :badge_category_id => 'all'}.merge(options)
       response = get(@url + '/badges/mine/' + options[:badge_category_id].to_s, options)
+      OpenStruct.new(JSON.parse(response.body))
+    end
+
+    def unearned_badges(options = Hash.new)
+      options = {:account_id => nil, :badge_category_id => nil}.merge(options)
+      response = get(@url + '/badges/unearned/' + options[:badge_category_id].to_s, options)
       OpenStruct.new(JSON.parse(response.body))
     end
 
