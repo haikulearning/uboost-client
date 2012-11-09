@@ -109,13 +109,16 @@ client.widgets(:session => session).profile(:account_id => 921679373)
 client.widgets(:session => session).profile(:account_id => 921679373)
 
 client.widgets.my_badges(:account_id => 921679373)
-client.widgets(:session => session).my_badges(:account_id => 921679373)
 
-client.widgets.ubar(:account_id => 921679373)
+client.widgets.ubar(:account_id => 921679373) # ubar doesn't accept :session
 
 client.widgets.list_of_leaderboards(:account_id => 921679373)
-client.widgets(:session => session).list_of_leaderboards(:account_id => 921679373)
 
 client.widgets.leaderboard(:account_id => 921679373, :leaderboard_id => 226)
-client.widgets(:session => session).leaderboard(:account_id => 921679373, :leaderboard_id => 226)
+
+client.widgets.badge_categories(:account_id => 921679373)
+
+client.widgets.badges_for_category(:account_id => 921679373, :badge_category_id => 31)
+
+client.widgets.unearned_badges(:account_id => 921679373, :badge_category_id => 31)
 ```
